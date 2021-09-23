@@ -1,0 +1,14 @@
+Game Auto-Detection
+===================
+1) add a blank text file 'detect.svm' alongside your individual game folders, e.g.
+    - roms/
+      - scummvm/
+        - detect.svm
+        - Sam & Max/
+          - (sam & max files)
+        - Blade Runner/
+          - (blade runner files)
+2) load ScummVM, navigate to 'detect.svm', then select it
+   - your screen will turn black for a moment while the script runs
+   - .svm files will be generated for each of your games
+3) load one of the Game.svm files to start your game directly, skipping the UI

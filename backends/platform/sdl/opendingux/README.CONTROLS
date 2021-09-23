@@ -1,0 +1,13 @@
+[ScummVM-Opendingux README]
+
+Controls
+========
+- Dpad/analog joy: move mouse cursor
+- A: left mouse button click
+- B: right mouse button click
+- X: '0' key
+- Y: '.' key (skips dialogue line in some engines)
+- Left Trigger: open global menu
+- Right Trigger: opens virtual keyboard
+- Select: ESC button, scene skip in some engines
+- Start: F5 key, game menu in some engines
