@@ -35,6 +35,9 @@ endif
 	$(CP) $(srcdir)/dists/opendingux/startUI.$(target).desktop $(bundle)/
 ifdef dualopk
 	$(CP) $(srcdir)/dists/opendingux/startGame.$(target).desktop $(bundle)/
+	$(CP) $(srcdir)/backends/platform/sdl/opendingux/README.OPENDINGUX.dual $(bundle)/README.man.txt
+else
+	$(CP) $(srcdir)/backends/platform/sdl/opendingux/README.OPENDINGUX $(bundle)/README.man.txt
 endif
 	$(CP) $(srcdir)/backends/platform/sdl/opendingux/README.OPENDINGUX $(bundle)/README.man.txt
 	echo >> $(bundle)/README.man.txt
