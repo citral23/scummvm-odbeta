@@ -27,6 +27,10 @@ Running Linux on an x86/amd64 machine:
 3. Run 'target=x backends/platform/sdl/opendingux/build_odbeta.sh' 
    where x=gcw0|lepus|rs90 
 
+   Or if you want a dual opk with one launcher capable of starting games directly 
+   for e.g. simplemenu integration :
+   'target=x dualopk=yes backends/platform/sdl/opendingux/build_odbeta.s' 
+
 4. Copy the resulting file scummvm_$(target).opk to your device
 
 5. Enjoy
