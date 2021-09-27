@@ -336,7 +336,8 @@ MODULE_OBJS += \
         fs/posix/posix-iostream.o \
         fs/posix-drives/posix-drives-fs.o \
         fs/posix-drives/posix-drives-fs-factory.o \
-	events/opendingux/opendinguxsdl-events.o
+	events/opendingux/opendinguxsdl-events.o \
+	graphics/opendingux/opendingux-graphics.o
 	
 endif
 
