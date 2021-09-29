@@ -14,6 +14,10 @@ export CXXFLAGS="-funsigned-char" # workaround for a scummvm tolower() bug when 
 #	export LDFLAGS="-Wl,-zcommon-page-size=2097152,-zmax-page-size=2097152 -lhugetlbfs"
 #fi
 
+if [ $target == "rs90" ]; then
+	export DEFINES="-DRS90 -DDISABLE_FANCY_THEMES"
+fi
+
 CONFIG+="./configure --host=opendingux --enable-release --disable-detection-full"
 CONFIG+=" --disable-alsa --disable-vorbis --disable-mt32emu --disable-nuked-opl --disable-tts"
 CONFIG+=" --disable-cloud --disable-sdlnet --disable-libcurl"
