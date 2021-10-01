@@ -76,8 +76,13 @@ void OSystem_SDL_Opendingux::initBackend() {
 		ConfMan.set("gui_theme", "builtin");
 	}
 	if (!ConfMan.hasKey("scale_factor")) {
-                ConfMan.set("scale_factor", "1");
-        }
+		ConfMan.set("scale_factor", "1");
+	}
+#ifdef RS90
+	if (!ConfMan.hasKey("output_rate")) {
+		ConfMan.set("output_rate", "22050");
+	}
+#endif
 
 	// Create the savefile manager
 	if (_savefileManager == 0) {
