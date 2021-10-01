@@ -3523,6 +3523,18 @@ if test -n "$_host"; then
 			append_var CXXFLAGS "-ffast-math -fdata-sections -ffunction-sections"
 			append_var LDFLAGS "-Wl,--as-needed,--gc-sections"
 			_vkeybd=yes
+			_alsa=no
+			_vorbis=no
+			_mt32emu=no
+			_timidity=no
+			_fluidsynth=no
+			_theoradec=no
+			_seq_midi=no
+			_nuked_opl=no
+			_tts=no
+			_curl=no
+			_cloud=no
+			_sdlnet=no
 			_optimization_level=-O3
 			_backend="opendingux"
 			_port_mk="backends/platform/sdl/opendingux/opendingux.mk"

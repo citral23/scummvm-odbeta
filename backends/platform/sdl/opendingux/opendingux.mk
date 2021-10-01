@@ -11,14 +11,16 @@ $(OD_EXE_STRIPPED): $(EXECUTABLE)
 $(bundle): all #GeneralUser\ GS\ FluidSynth\ v1.44.sf2
 	$(MKDIR) $(bundle)
 	$(CP) $(DIST_FILES_DOCS) $(bundle)/
-ifneq ($(target),rs90)
+
+ifneq ($(target), rg99)
 	$(MKDIR) $(bundle)/themes
 	$(CP) $(DIST_FILES_THEMES) $(bundle)/themes/
 endif
+
 ifdef DIST_FILES_ENGINEDATA
 	$(MKDIR) $(bundle)/engine-data
 	$(CP) $(DIST_FILES_ENGINEDATA) $(bundle)/engine-data/
-ifeq ($(target), rs90)
+ifeq ($(target), rg99)
 	$(CP) $(srcdir)/dists/opendingux/fonts_mini.dat $(bundle)/engine-data/fonts.dat
 endif
 endif
@@ -51,7 +53,11 @@ endif
 od-make-opk: $(bundle)
 	$(STRIP) $(bundle)/scummvm
 #	$(HUGEEDIT) --text --data $(bundle)/scummvm
+ifdef dualopk
+	$(srcdir)/dists/opendingux/make-opk.sh -d $(bundle) -o scummvm_$(target)_dual
+else
 	$(srcdir)/dists/opendingux/make-opk.sh -d $(bundle) -o scummvm_$(target)
+endif
 
 GeneralUser_GS_1.44-FluidSynth.zip:
 	curl -s https://spacehopper.org/mirrors/GeneralUser_GS_1.44-FluidSynth.zip -o GeneralUser_GS_1.44-FluidSynth.zip
