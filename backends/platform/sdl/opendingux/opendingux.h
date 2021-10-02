@@ -32,6 +32,8 @@ public:
 	virtual bool hasFeature(Feature f) override;
 	virtual void setFeatureState(Feature f, bool enable) override;
 	virtual bool getFeatureState(Feature f) override;
+	virtual Common::HardwareInputSet *getHardwareInputSet() override;
+	virtual Common::KeymapperDefaultBindings *getKeymapperDefaultBindings() override;
 
 protected:
 	virtual Common::String getDefaultConfigFileName() override;

@@ -3531,7 +3531,6 @@ if test -n "$_host"; then
 			_theoradec=no
 			_seq_midi=no
 			_nuked_opl=no
-			_tts=no
 			_curl=no
 			_cloud=no
 			_sdlnet=no

@@ -335,9 +335,7 @@ MODULE_OBJS += \
         fs/posix/posix-fs-factory.o \
         fs/posix/posix-iostream.o \
         fs/posix-drives/posix-drives-fs.o \
-        fs/posix-drives/posix-drives-fs-factory.o \
-	events/opendingux/opendinguxsdl-events.o
-	
+        fs/posix-drives/posix-drives-fs-factory.o
 endif
 
 ifeq ($(BACKEND),openpandora)

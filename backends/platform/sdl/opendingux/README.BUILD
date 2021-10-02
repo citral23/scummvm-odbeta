@@ -7,13 +7,13 @@ Running Linux on an x86/amd64 machine:
 2. git clone the ScummVM repository
 
 3. Run 'target=x backends/platform/sdl/opendingux/build_odbeta.sh' 
-   where x=gcw0|lepus|rs90 
+   where x=gcw0|lepus|rg99 
 
    Or if you want a dual opk with one launcher capable of starting games directly 
    for e.g. simplemenu integration :
    'target=x dualopk=yes backends/platform/sdl/opendingux/build_odbeta.s' 
 
-4. Copy the resulting file scummvm_$(target).opk to your device
+4. Copy the resulting file scummvm_$(target).opk or scummvm_$(target)_dual.opk to your device
 
 Game Auto-Detection (dualopk only)
 ==================================
@@ -32,10 +32,6 @@ Game Auto-Detection (dualopk only)
 
 Troubleshooting
 ===============
-Please be advised that currently games with a resolution above 320x240
-are disabled on lepus due to the limited screen resolutions and relative
-weak processor on these devices.
-
 In case you need to submit a bugreport, you may find the log file at the
 following path:
 

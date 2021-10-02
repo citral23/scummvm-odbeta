@@ -2,24 +2,32 @@
 
 Controls
 ========
-- Dpad/analog joy: move mouse cursor
-- A: left mouse button click
-- B: right mouse button click
-- X: '0' key
-- Y: '.' key (skips dialogue line in some engines)
-- Select: ESC button, scene skip in some engines
-- Start: open global menu
-- Left Shoulder: F5 key, game menu in some engines
-- Right Shoulder: opens virtual keyboard
+Left Stick - Mouse
+Left Stick+R - Slow Mouse
+A - Left mouse click
+B - Right mouse click
+X - Escape
+X+R - Return
+Y - Period
+Y+R - Space
+L - Game Menu (F5)
+R - Shift
+Start - Global Menu
+Select - Virtual Keyboard
+Select+R - AGI predictive input dialog
+D-pad - Keypad cursor keys
+D-Pad+R - Diagonal cursor keys
+
+On devices that have no stick, d-pad is mouse, cursor keys are not binded
 
 Game Auto-Detection (dualopk only)
 ==================================
 1) add a blank text file 'detect.svm' alongside your individual game folders, for example:
      ---------------
     | - roms/scummvm/
-    |    - detect.svm
-    |    - Game Folder/
-    |        - game files
+    |	 - detect.svm
+    |	 - Game Folder/
+    |	     - game files
      ------------------
 2) load ScummVM, navigate to and select 'detect.svm'
     - the loading screen will show while the script runs
