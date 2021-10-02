@@ -21,7 +21,9 @@ export CXXFLAGS="-funsigned-char" # workaround for a scummvm tolower() bug when 
 #fi
 
 if [ $target == "rg99" ]; then
-	export DEFINES="-DRS90 -DDISABLE_FANCY_THEMES"
+	export DEFINES="-DDISABLE_FANCY_THEMES"
+elif [ $target == "gcw0" ]; then
+	export DEFINES="-DGCW0"
 fi
 
 CONFIG="./configure --host=opendingux --enable-release --disable-detection-full"
@@ -29,6 +31,7 @@ CONFIG="./configure --host=opendingux --enable-release --disable-detection-full"
 case $target in
 	
 	gcw0)
+	CONFIG+=" --disable-all-engines --enable-engine="scumm,bladerunner""
 	;;
 
 	lepus)

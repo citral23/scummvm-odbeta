@@ -23,20 +23,72 @@
 #define FORBIDDEN_SYMBOL_EXCEPTION_system
 
 #include "common/scummsys.h"
+#include "common/config-manager.h"
+#include "common/translation.h"
 
 #include "backends/platform/sdl/opendingux/opendingux.h"
-#include "backends/events/opendingux/opendinguxsdl-events.h"
-
-#include "common/config-manager.h"
 
 #include "backends/fs/posix/posix-fs-factory.h"
 #include "backends/fs/posix/posix-fs.h"
 #include "backends/saves/default/default-saves.h"
 
+#include "backends/keymapper/action.h"
+#include "backends/keymapper/keymapper-defaults.h"
+#include "backends/keymapper/hardware-input.h"
+#include "backends/keymapper/keymap.h"
+#include "backends/keymapper/keymapper.h"
+
+#include "backends/events/sdl/sdl-events.h"
+
 #define SCUMM_DIR	"~/.scummvm"
 #define CONFIG_FILE	"~/.scummvmrc"
 #define SAVE_PATH	"~/.scummvm/saves"
 #define LOG_FILE	"~/.scummvm/scummvm.log"
+#define JOYSTICK_DIR	"/sys/devices/platform/joystick"
+
+static const Common::KeyTableEntry odKeyboardButtons[] = {
+	{ "JOY_A",		Common::KEYCODE_LCTRL,		_s("A")			},
+	{ "JOY_B",		Common::KEYCODE_LALT,		_s("B")			},
+	{ "JOY_X",		Common::KEYCODE_SPACE,		_s("X")			},
+	{ "JOY_Y",		Common::KEYCODE_LSHIFT,		_s("Y")			},
+	{ "JOY_BACK",		Common::KEYCODE_ESCAPE,		_s("Select")		},
+	{ "JOY_START",		Common::KEYCODE_RETURN,		_s("Start")		},
+	{ "JOY_LEFT_SHOULDER",	Common::KEYCODE_TAB,		_s("L")			},
+	{ "JOY_RIGHT_SHOULDER", Common::KEYCODE_BACKSPACE,	_s("R")			},
+	{ "JOY_UP",		Common::KEYCODE_UP,		_s("D-pad Up")		},
+	{ "JOY_DOWN",		Common::KEYCODE_DOWN,		_s("D-pad Down")	},
+	{ "JOY_LEFT",		Common::KEYCODE_LEFT,		_s("D-pad Left")	},
+	{ "JOY_RIGHT",		Common::KEYCODE_RIGHT,		_s("D-pad Right")	},
+	{0,			Common::KEYCODE_INVALID,	0			}
+};
+
+static const Common::HardwareInputTableEntry odJoystickButtons[] = {
+	{ "JOY_LEFT_STICK",	Common::JOYSTICK_BUTTON_LEFT_STICK,	_s("L3")	 },
+	{ nullptr,		0,					nullptr		 }
+};
+
+static const Common::AxisTableEntry odJoystickAxes[] = {
+	{ "JOY_LEFT_STICK_X",  Common::JOYSTICK_AXIS_LEFT_STICK_X,  Common::kAxisTypeFull, _s("Left Stick X")  },
+	{ "JOY_LEFT_STICK_Y",  Common::JOYSTICK_AXIS_LEFT_STICK_Y,  Common::kAxisTypeFull, _s("Left Stick Y")  },
+	{ nullptr,	       0,				    Common::kAxisTypeFull, nullptr	       }
+};
+
+Common::KeymapperDefaultBindings *OSystem_SDL_Opendingux::getKeymapperDefaultBindings() {
+	Common::KeymapperDefaultBindings *keymapperDefaultBindings = new Common::KeymapperDefaultBindings();
+
+	if (!Posix::assureDirectoryExists(JOYSTICK_DIR)) { 
+		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "VMOUSEUP", "JOY_UP");
+		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "VMOUSEDOWN", "JOY_DOWN");
+		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "VMOUSELEFT", "JOY_LEFT");
+		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "VMOUSERIGHT", "JOY_RIGHT");
+		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "UP", "");
+		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "DOWN", "");
+		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "LEFT", "");
+		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "RIGHT", "");
+	}
+
+	return keymapperDefaultBindings;
+}
 
 void OSystem_SDL_Opendingux::init() {
 
@@ -78,25 +130,16 @@ void OSystem_SDL_Opendingux::initBackend() {
 	if (!ConfMan.hasKey("scale_factor")) {
 		ConfMan.set("scale_factor", "1");
 	}
-	if (!ConfMan.hasKey("opl_driver")) {
-		ConfMan.set("opl_driver", "db");
-	}
-#ifdef RS90
+#ifndef GCW0
 	if (!ConfMan.hasKey("output_rate")) {
 		ConfMan.set("output_rate", "22050");
 	}
 #endif
-
 	// Create the savefile manager
 	if (_savefileManager == 0) {
 		_savefileManager = new DefaultSaveFileManager(SAVE_PATH);
 	}
 
-	// Create the events manager
-	if (_eventSource == 0)
-		_eventSource = new ODSdlEventSource();
-
-	// Call parent implementation of this method
 	OSystem_SDL::initBackend();
 }
 
@@ -125,3 +168,18 @@ void OSystem_SDL_Opendingux::setFeatureState(Feature f, bool enable) {
 bool OSystem_SDL_Opendingux::getFeatureState(Feature f) {
 	return OSystem_SDL::getFeatureState(f);
 }
+
+Common::HardwareInputSet *OSystem_SDL_Opendingux::getHardwareInputSet() {
+	using namespace Common;
+
+	CompositeHardwareInputSet *inputSet = new CompositeHardwareInputSet();
+
+	// Users may use USB mice and keyboards - currently not possible with SDL1 as it conflicts with gpios
+	//inputSet->addHardwareInputSet(new MouseHardwareInputSet(defaultMouseButtons));
+	//inputSet->addHardwareInputSet(new KeyboardHardwareInputSet(defaultKeys, defaultModifiers));
+	inputSet->addHardwareInputSet(new KeyboardHardwareInputSet(odKeyboardButtons, defaultModifiers));
+	inputSet->addHardwareInputSet(new JoystickHardwareInputSet(odJoystickButtons, odJoystickAxes));
+
+	return inputSet;
+}
+
