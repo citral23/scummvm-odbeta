@@ -27,16 +27,13 @@
 #include "common/translation.h"
 
 #include "backends/platform/sdl/opendingux/opendingux.h"
+#include "backends/events/sdl/sdl-events.h"
 
 #include "backends/fs/posix/posix-fs-factory.h"
 #include "backends/fs/posix/posix-fs.h"
 #include "backends/saves/default/default-saves.h"
 
-#include "backends/keymapper/action.h"
-#include "backends/keymapper/keymapper-defaults.h"
 #include "backends/keymapper/hardware-input.h"
-#include "backends/keymapper/keymap.h"
-#include "backends/keymapper/keymapper.h"
 
 #define SCUMM_DIR	"~/.scummvm"
 #define CONFIG_FILE	"~/.scummvmrc"
@@ -44,57 +41,31 @@
 #define LOG_FILE	"~/.scummvm/scummvm.log"
 #define JOYSTICK_DIR	"/sys/devices/platform/joystick"
 
-static const Common::KeyTableEntry odKeyboardButtons[] = {
-	{ "JOY_A",		Common::KEYCODE_LCTRL,		_s("A")			},
-	{ "JOY_B",		Common::KEYCODE_LALT,		_s("B")			},
-	{ "JOY_X",		Common::KEYCODE_SPACE,		_s("X")			},
-	{ "JOY_Y",		Common::KEYCODE_LSHIFT,		_s("Y")			},
-	{ "JOY_BACK",		Common::KEYCODE_ESCAPE,		_s("Select")		},
-	{ "JOY_START",		Common::KEYCODE_RETURN,		_s("Start")		},
-	{ "JOY_LEFT_SHOULDER",	Common::KEYCODE_TAB,		_s("L")			},
-	{ "JOY_RIGHT_SHOULDER", Common::KEYCODE_BACKSPACE,	_s("R")			},
-	{ "JOY_UP",		Common::KEYCODE_UP,		_s("D-pad Up")	},
-	{ "JOY_DOWN",		Common::KEYCODE_DOWN,		_s("D-pad Down")	},
-	{ "JOY_LEFT",		Common::KEYCODE_LEFT,		_s("D-pad Left")	},
-	{ "JOY_RIGHT",		Common::KEYCODE_RIGHT,		_s("D-pad Right")	},
-	{0,			Common::KEYCODE_INVALID,	0			}
-};
-
 static const Common::HardwareInputTableEntry odJoystickButtons[] = {
-	{ "JOY_LEFT_STICK",	Common::JOYSTICK_BUTTON_LEFT_STICK,	_s("L3")	 },
-	{ nullptr,		0,					nullptr		 }
+	{ "JOY_A",              Common::JOYSTICK_BUTTON_A,              _s("A")           },
+        { "JOY_B",              Common::JOYSTICK_BUTTON_B,              _s("B")           },
+        { "JOY_X",              Common::JOYSTICK_BUTTON_X,              _s("X")           },
+        { "JOY_Y",              Common::JOYSTICK_BUTTON_Y,              _s("Y")           },
+        { "JOY_BACK",           Common::JOYSTICK_BUTTON_BACK,           _s("Select")      },
+        { "JOY_START",          Common::JOYSTICK_BUTTON_START,          _s("Start")       },
+        { "JOY_LEFT_STICK",     Common::JOYSTICK_BUTTON_LEFT_STICK,     _s("L3")          },
+        { "JOY_RIGHT_STICK",    Common::JOYSTICK_BUTTON_RIGHT_STICK,    _s("R3")          },
+        { "JOY_LEFT_SHOULDER",  Common::JOYSTICK_BUTTON_LEFT_SHOULDER,  _s("L")           },
+        { "JOY_RIGHT_SHOULDER", Common::JOYSTICK_BUTTON_RIGHT_SHOULDER, _s("R")           },
+        { "JOY_UP",             Common::JOYSTICK_BUTTON_DPAD_UP,        _s("D-pad Up")    },
+        { "JOY_DOWN",           Common::JOYSTICK_BUTTON_DPAD_DOWN,      _s("D-pad Down")  },
+        { "JOY_LEFT",           Common::JOYSTICK_BUTTON_DPAD_LEFT,      _s("D-pad Left")  },
+        { "JOY_RIGHT",          Common::JOYSTICK_BUTTON_DPAD_RIGHT,     _s("D-pad Right") },
+        { nullptr,              0,                                      nullptr           }
 };
 
 static const Common::AxisTableEntry odJoystickAxes[] = {
-	{ "JOY_LEFT_STICK_X",  Common::JOYSTICK_AXIS_LEFT_STICK_X,  Common::kAxisTypeFull, _s("Left Stick X")  },
-	{ "JOY_LEFT_STICK_Y",  Common::JOYSTICK_AXIS_LEFT_STICK_Y,  Common::kAxisTypeFull, _s("Left Stick Y")  },
-	{ nullptr,	       0,				    Common::kAxisTypeFull, nullptr	       }
+        { "JOY_LEFT_STICK_X",  Common::JOYSTICK_AXIS_LEFT_STICK_X,  Common::kAxisTypeFull, _s("Left Stick X")  },
+        { "JOY_LEFT_STICK_Y",  Common::JOYSTICK_AXIS_LEFT_STICK_Y,  Common::kAxisTypeFull, _s("Left Stick Y")  },
+        { "JOY_RIGHT_STICK_X", Common::JOYSTICK_AXIS_RIGHT_STICK_X, Common::kAxisTypeFull, _s("Right Stick X") },
+        { "JOY_RIGHT_STICK_Y", Common::JOYSTICK_AXIS_RIGHT_STICK_Y, Common::kAxisTypeFull, _s("Right Stick Y") },
+        { nullptr,             0,                                   Common::kAxisTypeFull, nullptr             }
 };
-
-Common::KeymapperDefaultBindings *OSystem_SDL_Opendingux::getKeymapperDefaultBindings() {
-	Common::KeymapperDefaultBindings *keymapperDefaultBindings = new Common::KeymapperDefaultBindings();
-
-	if (!Posix::assureDirectoryExists(JOYSTICK_DIR)) { 
-		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "VMOUSEUP", "JOY_UP");
-		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "VMOUSEDOWN", "JOY_DOWN");
-		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "VMOUSELEFT", "JOY_LEFT");
-		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "VMOUSERIGHT", "JOY_RIGHT");
-		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "UP", "");
-		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "DOWN", "");
-		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "LEFT", "");
-		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "RIGHT", "");
-		keymapperDefaultBindings->setDefaultBinding(Common::kGuiKeymapName, "UP", "");
-		keymapperDefaultBindings->setDefaultBinding(Common::kGuiKeymapName, "DOWN", "");
-		keymapperDefaultBindings->setDefaultBinding(Common::kGuiKeymapName, "LEFT", "");
-		keymapperDefaultBindings->setDefaultBinding(Common::kGuiKeymapName, "RIGHT", "");
-		keymapperDefaultBindings->setDefaultBinding("engine-default", "UP", "");
-		keymapperDefaultBindings->setDefaultBinding("engine-default", "DOWN", "");
-		keymapperDefaultBindings->setDefaultBinding("engine-default", "LEFT", "");
-		keymapperDefaultBindings->setDefaultBinding("engine-default", "RIGHT", "");
-	}
-
-	return keymapperDefaultBindings;
-}
 
 void OSystem_SDL_Opendingux::init() {
 
@@ -180,10 +151,9 @@ Common::HardwareInputSet *OSystem_SDL_Opendingux::getHardwareInputSet() {
 
 	CompositeHardwareInputSet *inputSet = new CompositeHardwareInputSet();
 
-	// Users may use USB mice - keyboards currently not possible with SDL1 as it conflicts with gpios
+	// Users may use USB mice and keyboards
 	inputSet->addHardwareInputSet(new MouseHardwareInputSet(defaultMouseButtons));
-	//inputSet->addHardwareInputSet(new KeyboardHardwareInputSet(defaultKeys, defaultModifiers));
-	inputSet->addHardwareInputSet(new KeyboardHardwareInputSet(odKeyboardButtons, defaultModifiers));
+	inputSet->addHardwareInputSet(new KeyboardHardwareInputSet(defaultKeys, defaultModifiers));
 	inputSet->addHardwareInputSet(new JoystickHardwareInputSet(odJoystickButtons, odJoystickAxes));
 
 	return inputSet;

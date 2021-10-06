@@ -16,9 +16,9 @@ export PATH=$TOOLCHAIN/usr/bin:$SYSROOT/usr/include:$TOOLCHAIN/bin:$PATH
 export CXX=mipsel-linux-g++
 export CXXFLAGS="-funsigned-char" # workaround for a scummvm tolower() bug when adding games
 
-if [ $target != "rg99" ]; then
-	export LDFLAGS="-Wl,-zcommon-page-size=2097152,-zmax-page-size=2097152 -lhugetlbfs"
-fi
+#if [ $target != "rg99" ]; then
+#	export LDFLAGS="-Wl,-zcommon-page-size=2097152,-zmax-page-size=2097152 -lhugetlbfs"
+#fi
 
 if [ $target == "rg99" ]; then
 	export DEFINES="-DDISABLE_FANCY_THEMES"
@@ -31,6 +31,7 @@ CONFIG="./configure --host=opendingux --enable-release --disable-detection-full"
 case $target in
 	
 	gcw0)
+	CONFIG+=" --disable-all-engines --enable-engine="scumm""
 	;;
 
 	lepus)

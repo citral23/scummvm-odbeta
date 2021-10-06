@@ -3736,7 +3736,6 @@ case $_backend in
 		_text_console=yes
 		;;
 	opendingux)
-		_sdlconfig=sdl-config
 		_sdl=auto
 		append_var MODULES "backends/platform/sdl"
 		;;
