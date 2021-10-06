@@ -3519,11 +3519,12 @@ if test -n "$_host"; then
 		opendingux)
 			_sysroot=`$CXX --print-sysroot`
 			_sdlpath=$_sysroot/usr/bin
-			append_var DEFINES "-DDINGUX -DOPENDINGUX -DREDUCE_MEMORY_USAGE"
-			append_var CXXFLAGS "-ffast-math -fdata-sections -ffunction-sections"
-			append_var LDFLAGS "-Wl,--as-needed,--gc-sections"
-			_vkeybd=yes
+			append_var DEFINES  "-DDINGUX -DOPENDINGUX -DREDUCE_MEMORY_USAGE"
+			append_var CXXFLAGS "-ffast-math -fdata-sections -ffunction-sections -mplt -mno-shared"
+			append_var LDFLAGS  "-ffast-math -fdata-sections -ffunction-sections -mplt -mno-shared"
+			append_var LDFLAGS  "-O3 -Wl,--as-needed,--gc-sections"
 			_alsa=no
+			_vkeybd=yes
 			_vorbis=no
 			_mt32emu=no
 			_timidity=no

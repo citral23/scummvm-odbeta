@@ -1,6 +1,5 @@
 OD_EXE_STRIPPED := scummvm_stripped$(EXEEXT)
 bundle = od-opk
-HUGEEDIT=hugeedit
 
 all: $(OD_EXE_STRIPPED)
 
@@ -49,9 +48,7 @@ endif
 
 od-make-opk: $(bundle)
 	$(STRIP) $(bundle)/scummvm
-ifneq ($(target), rg99)
-	$(HUGEEDIT) --text --data $(bundle)/scummvm
-endif
+
 ifdef dualopk
 	$(srcdir)/dists/opendingux/make-opk.sh -d $(bundle) -o scummvm_$(target)_dual
 else
