@@ -61,7 +61,7 @@ static const Common::KeyTableEntry odKeyboardButtons[] = {
 };
 
 static const Common::HardwareInputTableEntry odJoystickButtons[] = {
-	{ "JOY_LEFT_STICK",	Common::JOYSTICK_BUTTON_LEFT_STICK,	_s("L3")	 },
+	{ "JOY_LEFT_TRIGGER",	Common::JOYSTICK_BUTTON_LEFT_STICK,	_s("L3")	 },
 	{ nullptr,		0,					nullptr		 }
 };
 
@@ -79,10 +79,6 @@ Common::KeymapperDefaultBindings *OSystem_SDL_Opendingux::getKeymapperDefaultBin
 		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "VMOUSEDOWN", "JOY_DOWN");
 		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "VMOUSELEFT", "JOY_LEFT");
 		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "VMOUSERIGHT", "JOY_RIGHT");
-		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "UP", "");
-		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "DOWN", "");
-		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "LEFT", "");
-		keymapperDefaultBindings->setDefaultBinding(Common::kGlobalKeymapName, "RIGHT", "");
 		keymapperDefaultBindings->setDefaultBinding(Common::kGuiKeymapName, "UP", "");
 		keymapperDefaultBindings->setDefaultBinding(Common::kGuiKeymapName, "DOWN", "");
 		keymapperDefaultBindings->setDefaultBinding(Common::kGuiKeymapName, "LEFT", "");
@@ -136,10 +132,17 @@ void OSystem_SDL_Opendingux::initBackend() {
 	if (!ConfMan.hasKey("scale_factor")) {
 		ConfMan.set("scale_factor", "1");
 	}
-#ifndef GCW0
+	if (!ConfMan.hasKey("opl_driver")) {
+		ConfMan.set("opl_driver", "db");
+	}
+#ifdef LEPUS
 	if (!ConfMan.hasKey("output_rate")) {
 		ConfMan.set("output_rate", "22050");
 	}
+#elif RS90
+	if (!ConfMan.hasKey("output_rate")) {
+                ConfMan.set("output_rate", "11025");
+        }
 #endif
 	// Create the savefile manager
 	if (_savefileManager == 0) {

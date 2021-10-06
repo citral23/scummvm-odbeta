@@ -3522,8 +3522,8 @@ if test -n "$_host"; then
 			append_var DEFINES "-DDINGUX -DOPENDINGUX -DREDUCE_MEMORY_USAGE"
 			append_var CXXFLAGS "-ffast-math -fdata-sections -ffunction-sections"
 			append_var LDFLAGS "-Wl,--as-needed,--gc-sections"
-			_vkeybd=yes
 			_alsa=no
+			_vkeybd=yes
 			_vorbis=no
 			_mt32emu=no
 			_timidity=no
@@ -5491,7 +5491,7 @@ echocheck "OpenGL for game"
 
 if test "$_opengl_game" = auto ; then
 	_opengl_game=no
-	if (test "$_backend" = "sdl" && test "$_opengl" = yes) || test "$_backend" = "android3d" || test "$_backend" = "switch" || test "$_backend" = "raspberrypi"; then
+	if (test "$_backend" = "sdl" && test "$_opengl" = yes) || test "$_backend" = "android3d" || test "$_backend" = "opendingux" || test "$_backend" = "switch" || test "$_backend" = "raspberrypi"; then
 		# Try different header filenames
 		# 1) GL/gl.h	     This is usually used on POSIX and Windows systems
 		# 2) OpenGL/gl.h     This is used on Mac OS X
